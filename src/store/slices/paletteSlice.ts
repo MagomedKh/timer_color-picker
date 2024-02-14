@@ -15,13 +15,17 @@ const paletteSlice = createSlice({
    initialState,
    reducers: {
       addColor: (state) => {
-         const newColor = { hex: "", id: crypto.randomUUID() };
+         const newColor: PaletteColor = { hex: "", id: crypto.randomUUID(), _isNew: true };
          state.colors.push(newColor);
       },
       editColor: (state, { payload }: PayloadAction<PaletteColor>) => {
          const color = state.colors.find((color) => color.id === payload.id);
          if (color) {
             color.hex = payload.hex;
+
+            if (payload._isNew === false) {
+               delete color._isNew;
+            }
          }
       },
       deleteColor: (state, { payload: id }: PayloadAction<PaletteColor["id"]>) => {

@@ -1,47 +1,46 @@
 import { Button, ColorPicker } from "antd";
 import { Color } from "antd/es/color-picker";
-import { FC, useDeferredValue, useEffect, useRef, useState } from "react";
+import { FC, useDeferredValue, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { deleteColor, editColor } from "../../../store/slices/paletteSlice";
 import { PaletteColor } from "../../../types/Palette";
 import styles from "./ColorItem.module.scss";
 
 interface IColorItem {
-   colorId: string;
-   isLastEl: boolean;
+   color: PaletteColor;
 }
 
-const ColorItem: FC<IColorItem> = ({ colorId, isLastEl }) => {
+const ColorItem: FC<IColorItem> = ({ color }) => {
    const dispatch = useDispatch();
 
-   const [currentColor, setCurrentColor] = useState("#1677ff");
    const [open, setOpen] = useState(false);
+   const [currentColor, setCurrentColor] = useState(color.hex || "#1677ff");
 
-   const isLastMountedRef = useRef(isLastEl);
    const deferredColor = useDeferredValue(currentColor);
 
    useEffect(() => {
       if (deferredColor) {
-         const editedColor: PaletteColor = { hex: deferredColor, id: colorId };
+         const editedColor: PaletteColor = { hex: deferredColor, id: color.id };
 
          dispatch(editColor(editedColor));
       }
    }, [deferredColor]);
 
    useEffect(() => {
-      if (isLastEl) {
-         setOpen(isLastMountedRef.current);
-      } else {
-         isLastMountedRef.current = false;
+      if (color._isNew) {
+         setOpen(true);
+
+         const notNewColor: PaletteColor = { hex: currentColor, id: color.id, _isNew: false };
+         dispatch(editColor(notNewColor));
       }
-   }, [isLastEl]);
+   }, []);
 
    const handleChange = (color: Color) => {
       setCurrentColor(color.toHexString());
    };
 
    const handleDelete = () => {
-      dispatch(deleteColor(colorId));
+      dispatch(deleteColor(color.id));
    };
 
    return (
@@ -50,7 +49,7 @@ const ColorItem: FC<IColorItem> = ({ colorId, isLastEl }) => {
             value={currentColor}
             onChange={handleChange}
             onOpenChange={setOpen}
-            open={open || undefined}
+            open={open}
             size="large"
          />
 

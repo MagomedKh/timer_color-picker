@@ -10,8 +10,8 @@ const ColorsList: FC = () => {
 
    return colors.length > 0 ? (
       <Space size="middle" wrap>
-         {colors.map((color, i) => (
-            <ColorItem colorId={color.id} key={color.id} isLastEl={colors.length - 1 === i} />
+         {colors.map((color) => (
+            <ColorItem color={color} key={color.id} />
          ))}
       </Space>
    ) : (
