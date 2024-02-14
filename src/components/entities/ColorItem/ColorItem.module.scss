@@ -1,0 +1,37 @@
+.paletteItem {
+   padding: 8px;
+
+   &:hover {
+      .closeBtn::before,
+      .closeBtn::after {
+         opacity: 1;
+      }
+   }
+}
+
+.closeBtn {
+   position: absolute;
+   width: 16px;
+   height: 16px;
+
+   &::before,
+   &::after {
+      content: " ";
+      position: absolute;
+      z-index: 10;
+      top: -3px;
+      left: 5px;
+      height: 16px;
+      width: 2px;
+      background-color: #ff0000;
+      opacity: 0;
+      transition: opacity ease-in-out 0.2s;
+   }
+
+   &::before {
+      transform: rotate(45deg);
+   }
+   &::after {
+      transform: rotate(-45deg);
+   }
+}
